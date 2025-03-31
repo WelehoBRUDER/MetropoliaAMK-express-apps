@@ -4,8 +4,7 @@
   "description": "This repository houses all web-development tasks for my studies at Metropolia AMK.  \r Each week is separated to its own branch.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev-w3a1": "nodemon week-3/assignment-1/app.js",
-    "dev-w3a2": "nodemon week-3/assignment-2/src/api/index.js"
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
