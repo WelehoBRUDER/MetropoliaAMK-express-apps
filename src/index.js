@@ -4,10 +4,11 @@ import catRouter from "./api/routes/cat-router.js";
 import userRouter from "./api/routes/user-router.js";
 
 const router = Router();
+const url = "/api/v1";
 
 // bind base url for all cat routes to catRouter
-router.use("/cats", catRouter);
-router.use("/users", userRouter);
+router.use(`${url}/cat`, catRouter);
+router.use(`${url}/user`, userRouter);
 
 app.use(router);
 
