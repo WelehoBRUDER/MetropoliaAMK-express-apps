@@ -24,7 +24,10 @@ const getCatById = async (req, res) => {
     } else {
       res.sendStatus(404);
     }
-  } catch {}
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 const getCatsByUserId = async (req, res) => {
@@ -35,13 +38,20 @@ const getCatsByUserId = async (req, res) => {
     } else {
       res.sendStatus(404);
     }
-  } catch {}
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 const postCat = async (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
+  const user = res.locals.user;
   try {
+    if (!user) {
+      res.sendStatus(401);
+      return;
+    }
+    req.body.owner = user.user_id;
     const result = await addCat(req.body, req.file);
     if (result.cat_id) {
       res.status(201);
@@ -49,29 +59,56 @@ const postCat = async (req, res) => {
     } else {
       res.sendStatus(400);
     }
-  } catch {}
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 const putCat = async (req, res) => {
+  const user = res.locals.user;
   try {
-    const result = await modifyCat(req.body, req.params.id);
+    console.log("ID", req.params.id);
+    console.log("user", user);
+    console.log("req.body", req.body);
+    const cat = await findCatById(req.params.id);
+    if (!cat) {
+      res.sendStatus(404);
+      return;
+    }
+    if (user.user_id !== cat.owner && user.role !== "admin") {
+      res.sendStatus(403);
+      return;
+    }
+    const result = await modifyCat(req.body, req.params.id, user);
     if (!result) {
       res.sendStatus(400);
       return;
     }
     res.sendStatus(200);
-  } catch {}
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 const deleteCat = async (req, res) => {
+  const user = res.locals.user;
   try {
-    const result = await removeCat(req.params.id);
+    if (user.user_id !== parseInt(req.params.id) && user.role !== "admin") {
+      res.sendStatus(403);
+      return;
+    }
+    const result = await removeCat(req.params.id, user);
     if (!result) {
       res.sendStatus(400);
       return;
     }
     res.sendStatus(200);
-  } catch {}
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 export {getCat, getCatById, getCatsByUserId, postCat, putCat, deleteCat};
