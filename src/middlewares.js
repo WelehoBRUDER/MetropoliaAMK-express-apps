@@ -21,7 +21,7 @@ const createThumbnail = async (req, res, next) => {
   next();
 };
 
-const authenticateToken = (req, res, next) => {
+const authenticateToken = async (req, res, next) => {
   console.log("authenticateToken", req.headers);
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];

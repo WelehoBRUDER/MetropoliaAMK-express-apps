@@ -47,7 +47,12 @@ const postUser = async (req, res) => {
 };
 
 const putUser = (req, res) => {
+  const user = res.locals.user.user_id;
   try {
+    if (user !== req.params.id) {
+      res.sendStatus(403);
+      return;
+    }
     const result = modifyUser(req.body, req.params.id);
     if (!result) {
       res.sendStatus(400);
