@@ -5,18 +5,18 @@ const createThumbnail = async (req, res, next) => {
     next();
     return;
   }
-  // TODO: use file path to create 160x160 png thumbnail with sharp
+  let extension = "jpg";
+  if (req.file.mimetype === "image/png") {
+    // if (req.file.mimetype.includes('/png')) {
+    extension = "png";
+  }
   const resizedImaged = await sharp(req.file.path)
     .resize(160, 160)
-    .toFile(addSuffix(req.file.path));
+    .toFile(`${req.file.path}_thumb.${extension}`);
   if (resizedImaged) {
     console.log("Thumbnail created:", resizedImaged);
   }
   next();
 };
-
-function addSuffix(filename) {
-  return `${filename}_thumb`;
-}
 
 export {createThumbnail};
