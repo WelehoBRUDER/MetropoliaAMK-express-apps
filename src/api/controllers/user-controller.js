@@ -5,6 +5,7 @@ import {
   modifyUser,
   removeUser,
 } from "../models/user-model.js";
+import bcrypt from "bcrypt";
 
 const getUser = async (req, res) => {
   try {
@@ -23,13 +24,15 @@ const getUserById = (req, res) => {
     } else {
       res.sendStatus(404);
     }
-  } catch {
+  } catch (error) {
+    console.error(error);
     res.sendStatus(500);
   }
 };
 
 const postUser = (req, res) => {
   try {
+    req.body.password = bcrypt.hashSync(req.body.password, 10);
     const result = addUser(req.body);
     if (result.user_id) {
       res.status(201);
@@ -37,7 +40,10 @@ const postUser = (req, res) => {
     } else {
       res.sendStatus(400);
     }
-  } catch {}
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 const putUser = (req, res) => {
@@ -49,7 +55,8 @@ const putUser = (req, res) => {
     }
     res.status(200);
     res.json({message: "User item updated."});
-  } catch {
+  } catch (error) {
+    console.error(error);
     res.sendStatus(500);
   }
 };
@@ -63,7 +70,8 @@ const deleteUser = (req, res) => {
     }
     res.status(200);
     res.json({message: "User item deleted."});
-  } catch {
+  } catch (error) {
+    console.error(error);
     res.sendStatus(500);
   }
 };

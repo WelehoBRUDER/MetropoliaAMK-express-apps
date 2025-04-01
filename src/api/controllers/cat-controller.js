@@ -24,7 +24,10 @@ const getCatById = async (req, res) => {
     } else {
       res.sendStatus(404);
     }
-  } catch {}
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 const getCatsByUserId = async (req, res) => {
@@ -35,7 +38,10 @@ const getCatsByUserId = async (req, res) => {
     } else {
       res.sendStatus(404);
     }
-  } catch {}
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 const postCat = async (req, res) => {
@@ -49,7 +55,10 @@ const postCat = async (req, res) => {
     } else {
       res.sendStatus(400);
     }
-  } catch {}
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 const putCat = async (req, res) => {
@@ -60,7 +69,10 @@ const putCat = async (req, res) => {
       return;
     }
     res.sendStatus(200);
-  } catch {}
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 const deleteCat = async (req, res) => {
@@ -71,7 +83,10 @@ const deleteCat = async (req, res) => {
       return;
     }
     res.sendStatus(200);
-  } catch {}
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 export {getCat, getCatById, getCatsByUserId, postCat, putCat, deleteCat};
