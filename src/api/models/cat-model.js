@@ -3,14 +3,16 @@
 import promisePool from "../../utils/database.js";
 
 const listAllCats = async () => {
-  const [rows] = await promisePool.query("SELECT * FROM cats");
+  const [rows] = await promisePool.query(
+    "SELECT cat.*, user.name AS owner_name FROM wsk_cats cat JOIN wsk_users user ON cat.owner = user.user_id"
+  );
   console.log("rows", rows);
   return rows;
 };
 
 const findCatById = async (id) => {
   const [rows] = await promisePool.execute(
-    "SELECT * FROM cats WHERE cat_id = ?",
+    "SELECT cat.*, user.name AS owner_name FROM wsk_cats WHERE cat_id = ? JOIN wsk_users user ON cat.owner = user.user_id",
     [id]
   );
   console.log("rows", rows);
@@ -21,7 +23,7 @@ const findCatById = async (id) => {
 };
 const findCatsByUserId = async (id) => {
   const [rows] = await promisePool.execute(
-    "SELECT * FROM cats WHERE owner = ?",
+    "SELECT cat.*, user.name AS owner_name FROM wsk_cats WHERE owner = ? JOIN wsk_users user ON cat.owner = user.user_id",
     [id]
   );
   console.log("rows", rows);
@@ -34,7 +36,7 @@ const findCatsByUserId = async (id) => {
 const addCat = async (cat, thumb) => {
   const {cat_name, weight, owner, birthdate} = cat;
   const filename = thumb ? thumb.filename : null;
-  const sql = `INSERT INTO cats (cat_name, weight, owner, filename, birthdate)
+  const sql = `INSERT INTO wsk_cats (cat_name, weight, owner, filename, birthdate)
                VALUES (?, ?, ?, ?, ?)`;
   const params = [cat_name, weight, owner, filename, birthdate];
   const rows = await promisePool.execute(sql, params);
@@ -46,7 +48,7 @@ const addCat = async (cat, thumb) => {
 };
 
 const modifyCat = async (cat, id) => {
-  const sql = promisePool.format(`UPDATE cats SET ? WHERE cat_id = ?`, [
+  const sql = promisePool.format(`UPDATE wsk_cats SET ? WHERE cat_id = ?`, [
     cat,
     id,
   ]);
@@ -60,7 +62,7 @@ const modifyCat = async (cat, id) => {
 
 const removeCat = async (id) => {
   const [rows] = await promisePool.execute(
-    "DELETE FROM cats WHERE cat_id = ?",
+    "DELETE FROM wsk_cats WHERE cat_id = ?",
     [id]
   );
   console.log("rows", rows);

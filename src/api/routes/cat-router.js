@@ -4,6 +4,7 @@ import {createThumbnail} from "../../middlewares.js";
 import {
   getCat,
   getCatById,
+  getCatsByUserId,
   postCat,
   putCat,
   deleteCat,

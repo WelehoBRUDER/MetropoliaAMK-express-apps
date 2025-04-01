@@ -1,14 +1,14 @@
 import promisePool from "../../utils/database.js";
 
 const listAllUsers = async () => {
-  const [rows] = await promisePool.query("SELECT * FROM users");
+  const [rows] = await promisePool.query("SELECT * FROM wsk_users");
   console.log("rows", rows);
   return rows;
 };
 
 const findUserById = async (id) => {
   const [rows] = await promisePool.execute(
-    "SELECT * FROM users WHERE user_id = ?",
+    "SELECT * FROM wsk_users WHERE user_id = ?",
     [id]
   );
   console.log("rows", rows);
@@ -20,7 +20,7 @@ const findUserById = async (id) => {
 
 const addUser = async (user) => {
   const {name, username, email, role, password} = user;
-  const sql = `INSERT INTO users (name, username, email, role, password)
+  const sql = `INSERT INTO wsk_users (name, username, email, role, password)
                VALUES (?, ?, ?, ?, ?)`;
   const params = [name, username, email, role, password];
   const rows = await promisePool.execute(sql, params);
@@ -32,7 +32,7 @@ const addUser = async (user) => {
 };
 
 const modifyUser = async (user, id) => {
-  const sql = promisePool.format(`UPDATE users SET ? WHERE user_id = ?`, [
+  const sql = promisePool.format(`UPDATE wsk_users SET ? WHERE user_id = ?`, [
     user,
     id,
   ]);
@@ -46,9 +46,9 @@ const modifyUser = async (user, id) => {
 
 const removeUser = async (id) => {
   // First delete all cats belonging to the user
-  await promisePool.execute("DELETE FROM cats WHERE owner = ?", [id]);
+  await promisePool.execute("DELETE FROM wsk_cats WHERE owner = ?", [id]);
   const [rows] = await promisePool.execute(
-    "DELETE FROM users WHERE user_id = ?",
+    "DELETE FROM wsk_users WHERE user_id = ?",
     [id]
   );
   console.log("rows", rows);

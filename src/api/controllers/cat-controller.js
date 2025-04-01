@@ -1,9 +1,19 @@
-import {addCat, findCatById, listAllCats} from "../models/cat-model.js";
+import {
+  addCat,
+  findCatById,
+  findCatsByUserId,
+  listAllCats,
+  modifyCat,
+  removeCat,
+} from "../models/cat-model.js";
 
 const getCat = async (req, res) => {
   try {
     res.json(await listAllCats());
-  } catch {}
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
 };
 
 const getCatById = async (req, res) => {
@@ -64,4 +74,4 @@ const deleteCat = async (req, res) => {
   } catch {}
 };
 
-export {getCat, getCatById, postCat, putCat, deleteCat};
+export {getCat, getCatById, getCatsByUserId, postCat, putCat, deleteCat};
