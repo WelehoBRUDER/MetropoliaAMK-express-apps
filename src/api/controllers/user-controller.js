@@ -30,10 +30,10 @@ const getUserById = (req, res) => {
   }
 };
 
-const postUser = (req, res) => {
+const postUser = async (req, res) => {
   try {
     req.body.password = bcrypt.hashSync(req.body.password, 10);
-    const result = addUser(req.body);
+    const result = await addUser(req.body);
     if (result.user_id) {
       res.status(201);
       res.json({message: "New user added.", result});
