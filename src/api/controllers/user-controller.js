@@ -47,9 +47,9 @@ const postUser = async (req, res) => {
 };
 
 const putUser = (req, res) => {
-  const user = res.locals.user.user_id;
+  const user = res.locals.user;
   try {
-    if (user !== parseInt(req.params.id)) {
+    if (user.user_id !== parseInt(req.params.id) && user.role !== "admin") {
       res.sendStatus(403);
       return;
     }
@@ -67,9 +67,9 @@ const putUser = (req, res) => {
 };
 
 const deleteUser = (req, res) => {
-  const user = res.locals.user.user_id;
+  const user = res.locals.user;
   try {
-    if (user !== parseInt(req.params.id)) {
+    if (user.user_id !== parseInt(req.params.id) && user.role !== "admin") {
       res.sendStatus(403);
       return;
     }

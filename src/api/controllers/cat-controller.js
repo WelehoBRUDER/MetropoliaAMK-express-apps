@@ -60,13 +60,13 @@ const postCat = async (req, res) => {
 };
 
 const putCat = async (req, res) => {
-  const user = res.locals.user.user_id;
+  const user = res.locals.user;
   try {
-    if (user !== parseInt(req.params.id)) {
+    if (user.user_id !== parseInt(req.params.id) && user.role !== "admin") {
       res.sendStatus(403);
       return;
     }
-    const result = await modifyCat(req.body, req.params.id);
+    const result = await modifyCat(req.body, req.params.id, user);
     if (!result) {
       res.sendStatus(400);
       return;
@@ -79,13 +79,13 @@ const putCat = async (req, res) => {
 };
 
 const deleteCat = async (req, res) => {
-  const user = res.locals.user.user_id;
+  const user = res.locals.user;
   try {
-    if (user !== parseInt(req.params.id)) {
+    if (user.user_id !== parseInt(req.params.id) && user.role !== "admin") {
       res.sendStatus(403);
       return;
     }
-    const result = await removeCat(req.params.id);
+    const result = await removeCat(req.params.id, user);
     if (!result) {
       res.sendStatus(400);
       return;
