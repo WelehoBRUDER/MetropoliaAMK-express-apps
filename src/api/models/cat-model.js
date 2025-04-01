@@ -10,7 +10,18 @@ const listAllCats = async () => {
 
 const findCatById = async (id) => {
   const [rows] = await promisePool.execute(
-    "SELECT * FROM cats WHERE cats_id = ?",
+    "SELECT * FROM cats WHERE cat_id = ?",
+    [id]
+  );
+  console.log("rows", rows);
+  if (rows.length === 0) {
+    return false;
+  }
+  return rows[0];
+};
+const findCatsByUserId = async (id) => {
+  const [rows] = await promisePool.execute(
+    "SELECT * FROM cats WHERE owner = ?",
     [id]
   );
   console.log("rows", rows);
@@ -59,4 +70,11 @@ const removeCat = async (id) => {
   return {message: "success"};
 };
 
-export {listAllCats, findCatById, addCat, modifyCat, removeCat};
+export {
+  listAllCats,
+  findCatById,
+  findCatsByUserId,
+  addCat,
+  modifyCat,
+  removeCat,
+};

@@ -17,6 +17,17 @@ const getCatById = async (req, res) => {
   } catch {}
 };
 
+const getCatsByUserId = async (req, res) => {
+  try {
+    const cats = await findCatsByUserId(req.params.id);
+    if (cats) {
+      res.json(cats);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch {}
+};
+
 const postCat = async (req, res) => {
   console.log(req.body);
   console.log(req.file);

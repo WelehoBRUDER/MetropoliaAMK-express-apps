@@ -1,3 +1,5 @@
+import promisePool from "../../utils/database.js";
+
 const listAllUsers = async () => {
   const [rows] = await promisePool.query("SELECT * FROM users");
   console.log("rows", rows);
@@ -43,6 +45,8 @@ const modifyUser = async (user, id) => {
 };
 
 const removeUser = async (id) => {
+  // First delete all cats belonging to the user
+  await promisePool.execute("DELETE FROM cats WHERE owner = ?", [id]);
   const [rows] = await promisePool.execute(
     "DELETE FROM users WHERE user_id = ?",
     [id]
@@ -54,4 +58,4 @@ const removeUser = async (id) => {
   return {message: "success"};
 };
 
-export {listAllUsers, findUserById, addUser};
+export {listAllUsers, findUserById, addUser, modifyUser, removeUser};

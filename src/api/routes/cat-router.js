@@ -17,6 +17,8 @@ catRouter
   .get(getCat)
   .post(upload.single("thumb"), createThumbnail, postCat);
 
+catRouter.route("/u/:id").get(getCatsByUserId);
+
 catRouter.route("/:id").get(getCatById).put(putCat).delete(deleteCat);
 
 export default catRouter;
