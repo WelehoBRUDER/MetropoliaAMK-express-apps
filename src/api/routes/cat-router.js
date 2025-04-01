@@ -17,7 +17,7 @@ const catRouter = express.Router();
 catRouter
   .route("/")
   .get(getCat)
-  .post(upload.single("file"), createThumbnail, postCat);
+  .post(upload.single("file"), createThumbnail, authenticateToken, postCat);
 
 catRouter.route("/u/:id").get(getCatsByUserId);
 

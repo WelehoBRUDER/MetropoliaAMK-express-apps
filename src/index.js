@@ -8,8 +8,8 @@ const router = Router();
 const url = "/api/v1";
 
 // bind base url for all cat routes to catRouter
-router.use(`${url}/cat`, catRouter);
-router.use(`${url}/user`, userRouter);
+router.use(`${url}/cats`, catRouter);
+router.use(`${url}/users`, userRouter);
 router.use(`${url}/auth`, authRouter);
 
 app.use(router);
