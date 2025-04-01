@@ -45,8 +45,6 @@ const getCatsByUserId = async (req, res) => {
 };
 
 const postCat = async (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
   try {
     const result = await addCat(req.body, req.file);
     if (result.cat_id) {
@@ -62,7 +60,12 @@ const postCat = async (req, res) => {
 };
 
 const putCat = async (req, res) => {
+  const user = res.locals.user.user_id;
   try {
+    if (user !== parseInt(req.params.id)) {
+      res.sendStatus(403);
+      return;
+    }
     const result = await modifyCat(req.body, req.params.id);
     if (!result) {
       res.sendStatus(400);
@@ -76,7 +79,12 @@ const putCat = async (req, res) => {
 };
 
 const deleteCat = async (req, res) => {
+  const user = res.locals.user.user_id;
   try {
+    if (user !== parseInt(req.params.id)) {
+      res.sendStatus(403);
+      return;
+    }
     const result = await removeCat(req.params.id);
     if (!result) {
       res.sendStatus(400);
