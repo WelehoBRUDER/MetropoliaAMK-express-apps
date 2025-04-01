@@ -5,7 +5,6 @@ const createThumbnail = async (req, res, next) => {
     next();
     return;
   }
-  console.log(req.file.path);
   // TODO: use file path to create 160x160 png thumbnail with sharp
   const resizedImaged = await sharp(req.file.path)
     .resize(160, 160)
@@ -17,9 +16,7 @@ const createThumbnail = async (req, res, next) => {
 };
 
 function addSuffix(filename) {
-  const parts = filename.split(".");
-  const ext = parts.pop();
-  return `${parts.join(".")}_thumb.${ext}`;
+  return `${filename}_thumb`;
 }
 
 export {createThumbnail};
