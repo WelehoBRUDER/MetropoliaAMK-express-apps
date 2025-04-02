@@ -4,16 +4,11 @@ import {getUserByUsername} from "../models/user-model.js";
 import "dotenv/config";
 
 const postLogin = async (req, res) => {
-  console.log("postLogin", req.body);
   const user = await getUserByUsername(req.body.username);
-  if (!user) {
-    res.sendStatus(401);
-    return;
-  }
-
-  if (!bcrypt.compareSync(req.body.password, user.password)) {
-    res.sendStatus(401);
-    return;
+  if (!bcrypt.compareSync(req.body.password, user?.password) || !user) {
+    const error = new Error("Password/username is incorrect");
+    error.status = 401;
+    return next(error);
   }
 
   const userWithNoPassword = {
@@ -31,11 +26,12 @@ const postLogin = async (req, res) => {
 };
 
 const getMe = async (req, res) => {
-  console.log("getMe", res.locals.user);
   if (res.locals.user) {
     res.json({message: "token ok", user: res.locals.user});
   } else {
-    res.sendStatus(401);
+    const error = new Error("User not authenticated");
+    error.status = 401;
+    return next(error);
   }
 };
 
