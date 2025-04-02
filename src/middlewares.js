@@ -1,6 +1,8 @@
 import sharp from "sharp";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
+import {validationResult} from "express-validator";
+import multer from "multer";
 
 const createThumbnail = async (req, res, next) => {
   if (!req.file) {
@@ -20,6 +22,26 @@ const createThumbnail = async (req, res, next) => {
   }
   next();
 };
+
+const upload = multer({
+  dest: "uploads/",
+  limits: {
+    fileSize: 10 * 1024 * 1024, // max 10 MB
+  },
+  fileFilter: (req, file, cb) => {
+    // allow only images and videos
+    if (
+      file.mimetype.startsWith("image/") ||
+      file.mimetype.startsWith("video/")
+    ) {
+      // accept file
+      cb(null, true);
+    } else {
+      // reject file
+      cb(null, false);
+    }
+  },
+});
 
 const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
@@ -53,4 +75,28 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
-export {createThumbnail, authenticateToken, notFoundHandler, errorHandler};
+const validationErrors = async (req, res, next) => {
+  // validation errors can be retrieved from the request object (added by express-validator middleware)
+  const errors = validationResult(req);
+  // check if any validation errors
+  if (!errors.isEmpty()) {
+    const messages = errors
+      .array()
+      .map((error) => `${error.path}: ${error.msg}`)
+      .join(", ");
+    const error = new Error(messages);
+    error.status = 400;
+    next(error);
+    return;
+  }
+  next();
+};
+
+export {
+  createThumbnail,
+  authenticateToken,
+  notFoundHandler,
+  errorHandler,
+  validationErrors,
+  upload,
+};
