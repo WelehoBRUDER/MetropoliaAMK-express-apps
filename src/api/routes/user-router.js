@@ -10,7 +10,7 @@ import {authenticateToken} from "../../middlewares.js";
 
 const userRouter = express.Router();
 
-userRouter.route("/").get(getUser).post(postUser);
+userRouter.route("/").get(getUser);
 
 userRouter
   .route("/:id")

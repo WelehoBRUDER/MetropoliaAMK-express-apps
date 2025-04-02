@@ -10,14 +10,23 @@ import {
   deleteCat,
 } from "../controllers/cat-controller.js";
 import {authenticateToken} from "../../middlewares.js";
-const upload = multer({dest: "uploads/"});
+import {body} from "express-validator";
+import {upload} from "../../middlewares.js";
 
 const catRouter = express.Router();
 
 catRouter
   .route("/")
   .get(getCat)
-  .post(upload.single("file"), createThumbnail, authenticateToken, postCat);
+  .post(
+    authenticateToken,
+    upload.single("file"),
+    body("cat_name").trim().isLength({min: 3, max: 50}),
+    body("weight").isNumeric(),
+    body("birthdate").isDate(),
+    createThumbnail,
+    postCat
+  );
 
 catRouter.route("/u/:id").get(getCatsByUserId);
 
