@@ -23,7 +23,6 @@ catRouter
     upload.single("file"),
     body("cat_name").trim().isLength({min: 3, max: 50}),
     body("weight").isNumeric(),
-    body("owner").isInt(),
     body("birthdate").isDate(),
     createThumbnail,
     postCat

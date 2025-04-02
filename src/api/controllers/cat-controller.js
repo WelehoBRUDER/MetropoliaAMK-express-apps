@@ -8,7 +8,7 @@ import {
 } from "../models/cat-model.js";
 import {validationResult} from "express-validator";
 
-const getCat = async (req, res) => {
+const getCat = async (req, res, next) => {
   const cats = await listAllCats();
   if (cats.length === 0) {
     const error = new Error("No cats found.");
@@ -19,7 +19,7 @@ const getCat = async (req, res) => {
   res.json(cats);
 };
 
-const getCatById = async (req, res) => {
+const getCatById = async (req, res, next) => {
   const cat = await findCatById(req.params.id);
   if (cat) {
     res.json(cat);
@@ -30,7 +30,7 @@ const getCatById = async (req, res) => {
   }
 };
 
-const getCatsByUserId = async (req, res) => {
+const getCatsByUserId = async (req, res, next) => {
   const cats = await findCatsByUserId(req.params.id);
   if (cats) {
     res.json(cats);
@@ -41,14 +41,7 @@ const getCatsByUserId = async (req, res) => {
   }
 };
 
-const postCat = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    // pass the error to the error handler middleware
-    const error = new Error("Invalid or missing fields");
-    error.status = 400;
-    return next(error);
-  }
+const postCat = async (req, res, next) => {
   const user = res.locals?.user;
 
   if (!user) {
@@ -56,7 +49,16 @@ const postCat = async (req, res) => {
     error.status = 401;
     return next(error);
   }
+
   req.body.owner = user.user_id;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // pass the error to the error handler middleware
+    const error = new Error("Invalid or missing fields");
+    error.status = 400;
+    return next(error);
+  }
   const result = await addCat(req.body, req.file);
   if (result.cat_id) {
     res.status(201);
@@ -68,7 +70,7 @@ const postCat = async (req, res) => {
   }
 };
 
-const putCat = async (req, res) => {
+const putCat = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     // pass the error to the error handler middleware
@@ -98,7 +100,7 @@ const putCat = async (req, res) => {
   res.sendStatus(200);
 };
 
-const deleteCat = async (req, res) => {
+const deleteCat = async (req, res, next) => {
   const user = res.locals?.user;
 
   if (user?.user_id !== parseInt(req.params.id) && user?.role !== "admin") {

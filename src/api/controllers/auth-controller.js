@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import {getUserByUsername} from "../models/user-model.js";
 import "dotenv/config";
 
-const postLogin = async (req, res) => {
+const postLogin = async (req, res, next) => {
   const user = await getUserByUsername(req.body.username);
   if (!bcrypt.compareSync(req.body.password, user?.password) || !user) {
     const error = new Error("Password/username is incorrect");
@@ -25,7 +25,7 @@ const postLogin = async (req, res) => {
   res.json({user: userWithNoPassword, token});
 };
 
-const getMe = async (req, res) => {
+const getMe = async (req, res, next) => {
   if (res.locals.user) {
     res.json({message: "token ok", user: res.locals.user});
   } else {
